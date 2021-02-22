@@ -14,7 +14,7 @@
         </p>
       </div>
       <small>Hi, Wellcome back!</small>
-      <form class="mt-3" @submit.prevent="onLogin()">
+      <form class="mt-3" @submit="onLogin()">
         <div class="form-group">
           <label for="exampleInputEmail1">Email</label>
           <input

@@ -4,6 +4,8 @@ import router from './router'
 import store from './store'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
+import * as VueGoogleMaps from 'vue2-google-maps'
+
 // Import Bootstrap an BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -14,6 +16,12 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
 Vue.config.productionTip = false
+
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: 'AIzaSyCHp9NDXwH42fkdmcguQud8_Lt_bW1G01s'
+  }
+})
 
 new Vue({
   router,

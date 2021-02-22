@@ -88,12 +88,18 @@
         </button>
       </form>
     </div>
+    <GoogleMapMaps
+      class="maps"
+      :center="{ lat: -7.250752616465824, lng: 112.75216248469022 }"
+      :zoom="10"
+    ></GoogleMapMaps>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
 import Alert from '../helper/swal'
+import * as VueGoogleMaps from 'vue2-google-maps'
 
 export default {
   data: () => {
@@ -102,6 +108,9 @@ export default {
       imgUrl: '',
       image: ''
     }
+  },
+  components:{
+    GoogleMapMaps: VueGoogleMaps.Map
   },
     methods: {
         offProfile() {
@@ -160,5 +169,10 @@ export default {
 }
 .form-control {
   height: 20px;
+}
+.maps {
+  width: 300px;
+  height: 300px;
+  margin-top: 20px;
 }
 </style>

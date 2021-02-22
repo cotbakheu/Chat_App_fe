@@ -185,13 +185,13 @@ export default {
       this.text = ''
     },
     getListUsers () {
-      console.log(this.id_from)
       axios.get(`http://localhost:4000/api/user/${this.id_from}`, {
         headers: {
           'token': store.getters['auth/getToken']
         }
       }).then((res) => {
         this.listUsers = res.data.data
+        console.log(this.listUsers)
       }).catch(err => console.error(err))
     },
     getListChat(id, name) {
