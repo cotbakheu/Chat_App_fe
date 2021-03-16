@@ -192,7 +192,14 @@
         class="maps"
         :center="{ lat: Number(detailUser.lat), lng: Number(detailUser.lng) }"
         :zoom="8"
-      ></GoogleMapMaps>
+      >
+        <GoogleMapMarker
+          :position="{
+            lat: parseFloat(detailUser.lat),
+            lng: parseFloat(detailUser.lng),
+          }"
+        ></GoogleMapMarker>
+      </GoogleMapMaps>
     </div>
   </div>
 </template>
@@ -214,7 +221,8 @@ export default {
     }
   },
   components:{
-    GoogleMapMaps: VueGoogleMaps.Map
+    GoogleMapMaps: VueGoogleMaps.Map,
+    GoogleMapMarker: VueGoogleMaps.Marker
   },
   computed: {
     ...mapGetters({
@@ -245,7 +253,7 @@ export default {
               this.swalLoadingClose()
               this.swalPop('Failed Update Data', response.message, 'error')
             }
-            this.actDetailUser()
+            this.actDetailUser(localStorage.getItem('id'))
             this.swalLoadingClose()
             this.toEdit = true
             this.swalPop('Success Update Data','', 'success')
@@ -268,11 +276,11 @@ export default {
       console.log(files[0])
       this.actUpdateUser(fd)
       .then((result) => {
-        this.actDetailUser()
+        console.log(result)
         if (result.code === 500) {
           this.swalPop('Update Photo Fail', result.message, 'error')
         } else {
-          this.actDetailUser()
+          this.actDetailUser(localStorage.getItem('id'))
           this.swalPop('Update Photo Success', '', 'success')
         }
         // this.swalLoadingClosed()
@@ -288,7 +296,7 @@ export default {
             if (response.code === 500) {
               this.swalPop('Failed', response.message, 'error')
             } else {
-              this.actDetailUser()
+              this.actDetailUser(localStorage.getItem('id'))
               this.swalPop('Success Delete Photo', '', 'success')
             }console.log(response)
           }).catch((err)=>{

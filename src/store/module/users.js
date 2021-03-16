@@ -71,7 +71,7 @@ const users = {
         },
         actAllUsers (context, data) {
             return new Promise ((resolve, reject)=> {
-                axios.post(`${process.env.VUE_APP_SERVER_API}/api/allUser`, data).then((response)=>{
+                axios.post(`${process.env.VUE_APP_SERVER_API}/allUser`, data).then((response)=>{
                     // console.log(response.data)
                     context.commit('setAllUsers', response.data.data)
                     resolve(response.data)

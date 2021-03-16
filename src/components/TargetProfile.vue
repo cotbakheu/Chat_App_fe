@@ -52,7 +52,14 @@
         class="maps"
         :center="{ lat: Number(targetUser.lat), lng: Number(targetUser.lng) }"
         :zoom="8"
-      ></GoogleMapMaps>
+      >
+        <GoogleMapMarker
+          :position="{
+            lat: parseFloat(targetUser.lat),
+            lng: parseFloat(targetUser.lng),
+          }"
+        ></GoogleMapMarker>
+      </GoogleMapMaps>
     </div>
   </div>
 </template>
@@ -74,7 +81,8 @@ export default {
     }
   },
   components:{
-    GoogleMapMaps: VueGoogleMaps.Map
+    GoogleMapMaps: VueGoogleMaps.Map,
+    GoogleMapMarker: VueGoogleMaps.Marker
   },
   computed: {
     ...mapGetters({

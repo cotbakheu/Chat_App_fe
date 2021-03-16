@@ -14,11 +14,15 @@
     />
     <div
       v-else
-      class="col-sm-4 col-12 py-3 px-4 mb-5 overflow-auto"
-      style="background-color: white"
+      class="col-sm-4 col-12 px-4 pt-3"
+      style="background-color: white; max-height: 100vh"
     >
       <!-- display mobile -->
-      <div v-if="!showChat" class="d-block d-sm-none">
+      <div
+        v-if="!showChat"
+        class="d-block d-sm-none overflow-auto"
+        style="height: 100vh"
+      >
         <div
           class="d-flex justify-content-center align-items-center overflow-auto"
         >
@@ -77,15 +81,19 @@
               style="font-size: 30px; padding-top: 5px"
             ></i>
           </div>
-          <div v-if="eventSearch" class="position-absolute">
+          <div
+            v-if="eventSearch"
+            class="position-absolute"
+            style="background: white"
+          >
             <div v-for="user in listAllUsers" :key="user.id">
               <img
                 :src="`${Web_URL}/images/${user.image}`"
                 class="image-fluid"
-                style="border-radius: 10px; max-width: 20px"
+                style="border-radius: 10px; max-width: 30px"
                 alt="user image"
               />
-              <span>{{ user.username }}</span>
+              <span class="ml-3">{{ user.username }}</span>
             </div>
           </div>
         </div>
@@ -181,15 +189,29 @@
               style="font-size: 30px; padding-top: 5px"
             ></i>
           </div>
-          <div v-if="eventSearch" class="position-absolute">
-            <div v-for="user in listAllUsers" :key="user.id">
-              <img
-                :src="`${Web_URL}/images/${user.image}`"
-                class="image-fluid"
-                style="border-radius: 10px; max-width: 20px"
-                alt="user image"
-              />
-              <span>{{ user.username }}</span>
+          <div
+            v-if="eventSearch"
+            class="position-absolute bg-light w-50 mt-5 px-2 rounded pt-2 border"
+          >
+            <div
+              class="border-bottom pb-1 mt-1 d-flex align-items-center"
+              v-for="user in listAllUsers"
+              :key="user.id"
+            >
+              <div class="flex-shrink-1">
+                <img
+                  :src="`${Web_URL}/images/${user.image}`"
+                  class="image-fluid"
+                  style="border-radius: 10px; max-width: 30px"
+                  alt="user image"
+                />
+              </div>
+              <div class="flex-fill text-left">
+                <span class="ml-2">{{ user.username }}</span>
+              </div>
+              <div @click="addFriend(user.id)" class="flex-fill text-right">
+                <i class="fas fa-plus main-font" style="font-size: 20px"></i>
+              </div>
             </div>
           </div>
         </div>
@@ -252,7 +274,7 @@
             v-if="targetProfile"
             class="col-12 col-sm-8 col-md-7 col-lg-5 mt-sm-4 mt-0 ml-5 border position-absolute d-flex justify-content-end align-items-end"
           >
-            <TargetProfile @hideProfile="hideProfile" />
+            <TargetProfile />
           </div>
         </div>
         <div
@@ -518,6 +540,20 @@ export default {
       }).catch((err)=>{
         console.log(err)
       })
+    },
+    addFriend(id) {
+      const data = {
+        roomId: Number(localStorage.getItem('roomId')),
+        user_id: Number(localStorage.getItem('id')),
+        target_id: id
+      }
+      const checkFriend = this.friends.map((el)=> el.id == id)
+      if (checkFriend.length >= 1) {
+        this.eventSearch = false
+      } else {
+        this.socket.emit('addFriend', data)
+        this.eventSearch = false
+      }
     },
     profile () {
       this.popMenu = !this.popMenu
