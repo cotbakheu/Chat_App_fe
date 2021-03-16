@@ -1,178 +1,321 @@
 <template>
-  <div class="side" style="padding: 50px; overflow: hidden">
-    <i
-      @click="offProfile"
-      class="fas fa-chevron-left main-font"
-      style="font-size: 30px"
-    ></i>
-    <span class="main-font" style="font-size: 30px; margin-left: 150px"
-      >Profile</span
-    >
-    <div class="main-profile">
-      <div class="top-user">
-        <img
-          class="d-block"
-          :src="`http://localhost:4000/images/${userData.image}`"
-          :style="
-            'background-image:url(' +
-            imgUrl +
-            '),url(http://localhost:4000/images/' +
-            userData.image +
-            '), url(http://localhost:4000/images/default_photo.png)'
-          "
-          width="80px"
-          alt="profile pic"
-        />
-        <input
-          @input="setImage"
-          id="fileImage"
-          type="file"
-          hidden
-          accept="image/x-png,image/gif,image/jpeg"
-        />
-        <button
-          class="btn d-block mt-2"
-          onclick="document.getElementById('fileImage').click();"
-          style="font-size: 12px; color: white; margin-left: -10px"
-        >
-          Choose Photo
-        </button>
-        <button
-          class="btn d-block mt-2"
-          @click="save('nophoto')"
-          style="font-size: 12px; color: white; margin-left: -10px"
-        >
-          Remove Photo
-        </button>
+  <div class="p-5 overflow-auto" style="max-height: 100vh">
+    <div>
+      <div class="d-flex align-items-center">
+        <div class="flex-fill">
+          <i
+            @click="offProfile"
+            class="fas fa-chevron-left main-font"
+            style="font-size: 30px"
+          ></i>
+        </div>
+        <div class="flex-fill">
+          <h1 class="main-font">Profile</h1>
+        </div>
       </div>
-      <div class="d-block ml-5">
-        <span class="d-block">Username: {{ userData.username }}</span>
-        <span class="d-block mt-2">Email: {{ userData.email }}</span>
+      <div>
+        <!-- Top User -->
+        <div class="mt-5">
+          <!-- image configuration -->
+          <div class="d-flex flex-column align-items-center">
+            <div v-if="!detailUser.image">
+              <b-spinner
+                style="width: 4rem; height: 4rem"
+                variant="info"
+              ></b-spinner>
+            </div>
+            <div v-else>
+              <img
+                class="image-fluid rounded"
+                :src="`${Web_URL}/images/${detailUser.image}`"
+                style="max-width: 80px"
+                alt="Profile Picture"
+              />
+            </div>
+            <input
+              type="file"
+              hidden
+              ref="fileInput"
+              accept="image/*"
+              @change="onFilePicked($event)"
+            />
+            <div
+              @click="onPickFile"
+              class="position-absolute text-center mainBtn configPhoto"
+            >
+              <i class="fas fa-pencil-alt"></i>
+            </div>
+            <div
+              @click="delPhoto"
+              class="position-absolute mt-4 text-center mainBtn configPhoto"
+            >
+              <i class="fas fa-trash-alt"></i>
+            </div>
+          </div>
+          <div class="text-center mt-3">
+            <h6>{{ userData.bio }}</h6>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="mt-5">
-      <title>Account</title>
-      <form @submit.prevent="save()">
-        <div class="d-flex">
+      <!-- bottom user -->
+      <div class="mt-5">
+        <form @submit.prevent="save()">
+          <div class="d-flex justify-content-end">
+            <div v-if="toEdit" @click="onEdit" class="btn mainBtn text-light">
+              Edit
+            </div>
+            <button v-else type="submit" class="btn mainBtn text-light">
+              Save Edit
+            </button>
+          </div>
           <div class="form-group mr-3">
-            <label for="">Username</label>
+            <label class="text-dark" for="">Bio</label>
             <input
+              v-if="toEdit"
               type="text"
-              v-model="userData.username"
+              v-model="detailUser.bio"
+              class="form-control shadow-none bg-light"
+              disabled
+            />
+            <input
+              v-else
+              type="text"
+              v-model="detailUser.bio"
               class="form-control shadow-none"
             />
           </div>
-          <div class="form-group">
-            <label for="">Phone</label>
-            <input
-              type="text"
-              v-model="userData.phone"
-              class="form-control shadow-none"
-            />
+          <div class="d-flex">
+            <div class="form-group border-right pr-2 mr-3">
+              <label for="">Username</label>
+              <input
+                v-if="toEdit"
+                type="text"
+                v-model="detailUser.username"
+                class="form-control shadow-none bg-light"
+                disabled
+              />
+              <input
+                v-else
+                type="text"
+                v-model="detailUser.username"
+                class="form-control shadow-none"
+              />
+            </div>
+            <div class="form-group">
+              <label for="">Email</label>
+              <input
+                v-if="toEdit"
+                type="text"
+                v-model="detailUser.email"
+                class="form-control shadow-none bg-light"
+                disabled
+              />
+              <input
+                v-else
+                type="text"
+                v-model="detailUser.email"
+                class="form-control shadow-none"
+              />
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label for="">Address</label>
-          <input
-            type="text"
-            v-model="userData.address"
-            class="form-control shadow-none"
-          />
-        </div>
-        <button
-          type="submit"
-          class="btn mt-3"
-          style="color: white; margin-left: 200px"
-        >
-          Submit Change
-        </button>
-      </form>
+          <div class="d-flex">
+            <div class="form-group border-right pr-2 mr-3">
+              <label for="">Name</label>
+              <input
+                v-if="toEdit"
+                type="text"
+                v-model="detailUser.name"
+                class="form-control shadow-none bg-light"
+                disabled
+              />
+              <input
+                v-else
+                type="text"
+                v-model="detailUser.name"
+                class="form-control shadow-none"
+              />
+            </div>
+            <div class="form-group">
+              <label for="">Phone</label>
+              <input
+                v-if="toEdit"
+                type="text"
+                v-model="detailUser.phone"
+                class="form-control shadow-none bg-light"
+                disabled
+              />
+              <input
+                v-else
+                type="text"
+                v-model="detailUser.phone"
+                class="form-control shadow-none"
+              />
+            </div>
+          </div>
+          <div class="d-flex">
+            <div class="form-group mr-3 border-right pr-2">
+              <label for="">Latitude</label>
+              <input
+                v-if="toEdit"
+                type="text"
+                v-model="detailUser.lat"
+                class="form-control shadow-none bg-light"
+                disabled
+              />
+              <input
+                v-else
+                type="text"
+                v-model="detailUser.lat"
+                class="form-control shadow-none"
+              />
+            </div>
+            <div class="form-group">
+              <label for="">Longitude</label>
+              <input
+                v-if="toEdit"
+                type="text"
+                v-model="detailUser.lng"
+                class="form-control shadow-none bg-light"
+                disabled
+              />
+              <input
+                v-else
+                type="text"
+                v-model="detailUser.lng"
+                class="form-control shadow-none"
+              />
+            </div>
+          </div>
+        </form>
+      </div>
+      <GoogleMapMaps
+        class="maps"
+        :center="{ lat: Number(detailUser.lat), lng: Number(detailUser.lng) }"
+        :zoom="8"
+      ></GoogleMapMaps>
     </div>
-    <GoogleMapMaps
-      class="maps"
-      :center="{ lat: -7.250752616465824, lng: 112.75216248469022 }"
-      :zoom="10"
-    ></GoogleMapMaps>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
-import Alert from '../helper/swal'
 import * as VueGoogleMaps from 'vue2-google-maps'
+import {mapActions, mapGetters} from 'vuex'
+import {onTalkMixin} from '../helper/mixins'
 
 export default {
+  mixins: [onTalkMixin],
   data: () => {
     return {
       userData: {},
       imgUrl: '',
-      image: ''
+      image: '',
+      toEdit: true,
+      Web_URL: process.env.VUE_APP_URL,
     }
   },
   components:{
     GoogleMapMaps: VueGoogleMaps.Map
   },
-    methods: {
-        offProfile() {
-            this.$emit('clicked', 'false')
-        },
-        setUserData () {
-          axios.get(`http://localhost:4000/api/user/${this.$store.getters['auth/getUserData'].id}`, {
-            headers: {
-              'token': this.$store.getters['auth/getToken']
-            }
-          }).then((res) => {
-            this.userData = res.data.data[0]
-          }).catch(err => console.error(err))
-        },
-        save (e) {
-          console.log(this.userData)
-          let data = new FormData()
-          this.userData.phone ? data.append('phone', this.userData.phone) : data.append('phone', '')
-          this.userData.address ? data.append('address', this.userData.address) : data.append('address', '')
-          if (e === 'nophoto') {
-            data.append('image', '')
-          } else if (this.image) {
-            data.append('image', this.image)
-          }
-          axios.patch(`http://localhost:4000/api/user/${this.userData.id}`, data, {
-            headers: {
-              'token': this.$store.getters['auth/getToken']
-            }
-          }).then((res) => {
-            this.setUserData()
-            Alert.methods.toastSuccess(res.data.message)
-          }).catch((err) => {
-            Alert.methods.toastDanger(err.response.message)
-          })
-        },
-        setImage(e) {
-          const file = e.target.files[0]
-          this.imgUrl = URL.createObjectURL(file)
-          this.image = file
-        }
+  computed: {
+    ...mapGetters({
+      detailUser: 'users/detailUser'
+    })
+  },
+  methods: {
+    ...mapActions({
+      actDetailUser: 'users/actDetailUser',
+      actUpdateUser: 'users/actionUpdateUser',
+      actDeletePhoto: 'users/actDeletePhoto'
+    }),
+    offProfile() {
+        this.$emit('clicked', false)
     },
+    onEdit() {
+      this.toEdit = false
+    },
+    onPickFile () {
+      this.$refs.fileInput.click()
+    },
+    save() {
+      this.swalConfirm('Do you want to save change?', '', 'question' ).then((response)=>{
+        if (response) {
+          this.swalLoading('Updating Data')
+          this.actUpdateUser(this.detailUser).then((response)=>{
+            if (response.code === 500) {
+              this.swalLoadingClose()
+              this.swalPop('Failed Update Data', response.message, 'error')
+            }
+            this.actDetailUser()
+            this.swalLoadingClose()
+            this.toEdit = true
+            this.swalPop('Success Update Data','', 'success')
+          })
+        }
+      })
+    },
+    onFilePicked (event) {
+      // alert('tes')
+      // this.swalLoading('Uploading Photo')
+      const files = event.target.files
+      const fileReader = new FileReader()
+      fileReader.addEventListener('load', () => {
+        this.imageUrl = fileReader.result
+        // this.swalLoadingClosed()
+      })
+      fileReader.readAsDataURL(files[0])
+      const fd = new FormData()
+      fd.append('image', files[0])
+      console.log(files[0])
+      this.actUpdateUser(fd)
+      .then((result) => {
+        this.actDetailUser()
+        if (result.code === 500) {
+          this.swalPop('Update Photo Fail', result.message, 'error')
+        } else {
+          this.actDetailUser()
+          this.swalPop('Update Photo Success', '', 'success')
+        }
+        // this.swalLoadingClosed()
+      }).catch((err) => {
+        // this.swalLoadingClosed()
+        console.log(err)
+      })
+    },
+    delPhoto() {
+      this.swalConfirm('Do you want to delete photo?','', 'warning').then((response)=>{
+        if (response) {
+          this.actDeletePhoto().then((response)=>{
+            if (response.code === 500) {
+              this.swalPop('Failed', response.message, 'error')
+            } else {
+              this.actDetailUser()
+              this.swalPop('Success Delete Photo', '', 'success')
+            }console.log(response)
+          }).catch((err)=>{
+            console.log(err)
+          })
+        }
+      })
+    },
+  },
     mounted () {
-    this.setUserData()
+      this.actDetailUser(localStorage.getItem('id'))
   }
 }
 </script>
 
 <style scope>
-.main-profile {
-  display: flex;
-  margin-top: 50px;
-}
-.top-user {
-  display: flex;
-  flex-direction: column;
-}
-.form-control {
-  height: 20px;
-}
 .maps {
   width: 300px;
   height: 300px;
   margin-top: 20px;
+}
+.configPhoto {
+  height: 20px;
+  width: 20px;
+  font-size: 13px;
+  border-radius: 5px !important;
+  margin-left: 100px;
+  color: white;
 }
 </style>

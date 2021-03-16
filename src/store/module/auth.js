@@ -1,13 +1,10 @@
 import Axios from 'axios'
-// import Swal from 'sweetalert2'
-import Alert from '../../helper/swal'
+
 const auth = {
     namespaced: true,
     state: () => {
         return {
-            token: localStorage.getItem('token') || null,
-            name: localStorage.getItem('name') || null,
-            id: localStorage.getItem('id') || null
+            userData: {},
         }
     },
     getters: {
@@ -15,30 +12,23 @@ const auth = {
             return state.token
         },
         getUserData (state) {
-            return {
-                name: state.name,
-                id: state.id
-            }
+            return state.userData
         }
     },
     mutations: {
-        setState (state, payload) {
-            state.token = payload.token
-            state.access = payload.access
-            state.name = payload.name
-            state.uid = payload.uid
+        setUserData (state, payload) {
+            // console.log(payload)
+            state.userData = payload
         },
         deleteState (state) {
-            state.token = ''
-            state.name = ''
-            state.id = ''
+            state.userData = {}
         }
     },
     actions: {
         register (context, payload) {
             return new Promise((resolve, reject) => {
-                Axios.post(`http://localhost:4000/api/register`, payload).then(() => {
-                    resolve(true)
+                Axios.post(`${process.env.VUE_APP_SERVER_API}/register`, payload).then((res) => {
+                    resolve(res.data)
                 }).catch((err) => {
                     reject(err.response.data.message)
                 })
@@ -46,27 +36,21 @@ const auth = {
         },
         login (context, payload) {
             return new Promise((resolve, reject) => {
-                Axios.post(`http://localhost:4000/api/login`, payload).then((res) => {
+                Axios.post(`${process.env.VUE_APP_SERVER_API}/login`, payload).then((res) => {
+                    // console.log(res.data)
                     if (res.data.code === 500) {
-                        Alert.methods.toastDanger(res.data.message)
+                        resolve(res.data)
                     } else {
-                        Alert.methods.toastSuccess(res.data.message)
                         localStorage.setItem('token', res.data.data.token)
-                        localStorage.setItem('name', res.data.data.username)
+                        localStorage.setItem('username', res.data.data.username)
                         localStorage.setItem('id', res.data.data.id)
-                        context.commit('setState', {
-                            token: res.data.data.token,
-                            username: res.data.data.username,
-                            id: res.data.data.id
-                        })
-                        resolve(true)
+                        localStorage.setItem('name', res.data.data.id)
+                        localStorage.setItem('roomId', res.data.data.room_id)
+                        context.commit('setUserData', res.data.data)
+                        resolve(res.data)
                     }
-                }).catch((err) => {
-                    if (err.response) {
-                        reject(err.response.data.message)
-                    } else {
-                        reject('Something wrong')
-                    }
+                }).catch(() => {
+                    reject('Something wrong')
                 })
             })
         },
@@ -75,10 +59,12 @@ const auth = {
                 localStorage.removeItem('token')
                 localStorage.removeItem('name')
                 localStorage.removeItem('id')
+                localStorage.removeItem('username')
+                localStorage.removeItem('roomId')
                 commit('deleteState')
                 resolve(true)
             })
         }
-    }
+    },
 }
 export default auth

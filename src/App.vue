@@ -16,4 +16,8 @@
 .main-font {
   color: #7e98df;
 }
+.mainBtn {
+  background: #7e98df;
+  border-radius: 20px;
+}
 </style>

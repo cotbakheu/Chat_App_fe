@@ -9,6 +9,7 @@ import * as VueGoogleMaps from 'vue2-google-maps'
 // Import Bootstrap an BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import './assets/style.css'
 
 // Make BootstrapVue available throughout your project
 Vue.use(BootstrapVue)

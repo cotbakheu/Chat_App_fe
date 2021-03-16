@@ -3,8 +3,6 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Register from '../views/Register.vue'
 import Login from '../views/Login.vue'
-import store from '../store/index'
-import Alert from '../helper/swal'
 
 Vue.use(VueRouter)
 
@@ -37,10 +35,9 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched[0].meta.auth) {
-    if (store.getters['auth/getToken']) {
+    if (localStorage.getItem('token')) {
         next()
     } else {
-      Alert.methods.toastDanger('You need to login')
       next({
         path: '/login',
       })

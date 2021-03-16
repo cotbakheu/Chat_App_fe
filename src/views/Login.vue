@@ -1,6 +1,10 @@
 <template>
-  <div style="padding-top: 50px">
-    <div class="shadow" style="background: white" id="login">
+  <div class="container py-5 d-flex justify-content-center align-items-center">
+    <div
+      class="col-md-4 col-12 shadow py-5 px-5"
+      style="background: white; border-radius: 20px"
+      id="login"
+    >
       <div>
         <p
           style="
@@ -14,19 +18,19 @@
         </p>
       </div>
       <small>Hi, Wellcome back!</small>
-      <form class="mt-3" @submit="onLogin()">
+      <form class="mt-3" @submit.prevent="onLogin()">
         <div class="form-group">
-          <label for="exampleInputEmail1">Email</label>
+          <h5 for="exampleInputEmail1">Email</h5>
           <input
             type="email"
             class="form-control"
-            placeholder="Email"
+            placeholder="email@mail.com"
             id="exampleInputEmail1"
             v-model="form.email"
           />
         </div>
         <div class="form-group">
-          <label for="exampleInputPassword1">Password</label>
+          <h5 for="exampleInputPassword1">Password</h5>
           <input
             type="password"
             class="form-control"
@@ -35,12 +39,14 @@
             v-model="form.password"
           />
         </div>
-        <button type="submit" class="btn" style="width: 100%; color: white">
+        <button type="submit" class="btn mainBtn w-100" style="color: white">
           Login
         </button>
       </form>
       <p class="mt-3" style="text-align: center">Login with</p>
-      <button class="btn" style="width: 100%; color: white">Google</button>
+      <button class="btn w-100 mainBtn" style="color: white">
+        <i class="fab fa-google"></i> Google
+      </button>
       <p class="mt-3 text-center" style="font-size: 12px">
         Dont have an account?
         <router-link style="color: #7e98df; font-style: none" to="/register"
@@ -53,10 +59,10 @@
 
 <script>
 import { mapActions } from 'vuex'
-import Alert from '../helper/swal'
+import {onTalkMixin} from '../helper/mixins'
 
 export default {
-  mixins: [Alert],
+  mixins: [onTalkMixin],
     data: () => {
         return {
             form: {
@@ -67,35 +73,32 @@ export default {
     },
     methods: {
         ...mapActions({
-          userLogin : 'auth/login'
+          userLogin : 'auth/login',
+          actDetailUser: 'users/actDetailUser'
         }),
         onLogin () {
-          this.userLogin(this.form).then(()=>{
-            this.$router.push('/')
-          }).catch(()=>{})
+          this.userLogin(this.form).then((response)=>{
+            // console.log(response)
+            if (response.code == 500) {
+              this.swalPop('Login Failed', response.message, 'error')
+            } else {
+              this.actDetailUser(localStorage.getItem('id')).then(()=>{
+                this.$router.push('/')
+              }).catch((err)=>{
+                console.log(err)
+              })
+            }
+          }).catch((err)=>{
+            console.log(err)
+          })
         }
     }
 }
 </script>
 
 <style scope>
-#login {
-  border-radius: 30px;
-  width: 30%;
-  height: auto;
-  margin: auto;
-  padding: 50px;
-}
 .form-control {
   border: none !important;
   border-bottom: 1px solid lightgrey !important;
-  color: black;
-}
-.btn {
-  background: #7e98df !important;
-  border-radius: 20px !important;
-}
-label {
-  color: #848484;
 }
 </style>
