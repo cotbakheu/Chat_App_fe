@@ -64,7 +64,7 @@ npm run lint
 ```
 
 ## Deployment
- * Visit our demo at : [OnTalk](http://54.164.121.31:4234/)
+ * Visit demo at : [OnTalk](http://54.164.121.31:4234/)
 
 ## Backend Repository
 [Backend OnTalk Aplication](https://github.com/cotbakheu/OnTalk_Backend)
