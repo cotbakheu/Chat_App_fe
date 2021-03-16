@@ -47,11 +47,10 @@ const users = {
             })
         },
         actionUpdateUser (context, data) {
-            console.log(data)
             return new Promise ((resolve, reject)=> {
                 axios.patch(`${process.env.VUE_APP_SERVER_API}/user/${localStorage.getItem('id')}`, data, {headers: { token: localStorage.getItem('token')}}).then((response)=>{
-                    console.log(response)
-                    resolve(true)
+                    // console.log(response)
+                    resolve(response.data)
                 }).catch((err)=>{
                     console.loh(err)
                     reject(err)
