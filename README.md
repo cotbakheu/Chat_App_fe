@@ -4,12 +4,19 @@ This app use socket.io as chat integration, Vue Js as frontend development, Expr
 
 
 
-
-
-
-
 ## Documentation
-Soon
+
+### Desktop Version
+![login](https://i.ibb.co/YDpmGnC/g-login.jpg)
+![home](https://i.ibb.co/Jm0gWZJ/g-home.jpg)
+![target](https://i.ibb.co/0XPQVHV/g-target.jpg)
+![profile](https://i.ibb.co/413P9HZ/g-profile.jpg)
+
+
+### Mobile Version
+![m-home](https://i.ibb.co/hKN1sVy/g-m-home.jpg)
+![m-chat](https://i.ibb.co/3rPY526/g-m-chat.jpg)
+![m-profile](https://i.ibb.co/pzcxVj6/g-m-profile.jpg)
 
 ## Getting Started
 
@@ -33,7 +40,7 @@ Here is few step to run the OnTalk frontend web aplication:
 1. Open your terminal and head to your project directory
 2. Clone this repository
 ```
-git clone https://github.com/cotbakheu/Chat_App_fe
+git clone https://github.com/cotbakheu/OnTalk_Frontend
 ``` 
 3. Set up your .env file
   * VUE_APP_SERVER_API : fill with your API URL server or you can use this default backend aplication attach below this page.
@@ -57,7 +64,7 @@ npm run lint
 ```
 
 ## Deployment
- * Visit our demo at : soon 
+ * Visit our demo at : [OnTalk](http://54.164.121.31:4234/)
 
 ## Backend Repository
-[Backend OnTalk Aplication](https://github.com/cotbakheu/Chat_App_be)
+[Backend OnTalk Aplication](https://github.com/cotbakheu/OnTalk_Backend)

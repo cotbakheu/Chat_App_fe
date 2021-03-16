@@ -481,7 +481,7 @@ export default {
   name: 'Home',
   data: () => {
     return {
-      socket: io('http://localhost:4000'),
+      socket: io('http://54.164.121.31:4234'),
       Web_URL: process.env.VUE_APP_URL,
       onProfile: false,
       user: '',
@@ -547,7 +547,7 @@ export default {
         user_id: Number(localStorage.getItem('id')),
         target_id: id
       }
-      const checkFriend = this.friends.map((el)=> el.id == id)
+      const checkFriend = this.friends.filter((el)=> el.id == id)
       if (checkFriend.length >= 1) {
         this.eventSearch = false
       } else {
